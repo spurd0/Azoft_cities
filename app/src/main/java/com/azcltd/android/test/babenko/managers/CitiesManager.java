@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.azcltd.android.test.babenko.BuildConfig;
+import com.azcltd.android.test.babenko.CitiesApplication;
 import com.azcltd.android.test.babenko.R;
 import com.azcltd.android.test.babenko.data.Cities;
 import com.azcltd.android.test.babenko.interfaces.AzcltdService;
@@ -32,7 +33,7 @@ public class CitiesManager {
 
     public void requestCities(final CitiesRequestCallback callback) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://azcltd.com")
+                .baseUrl(CitiesApplication.getContext().getString(R.string.azcltd_url))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
