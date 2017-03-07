@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Azoft Cities</string>
+    <string name="azcltd_url">http://azcltd.com</string>
 </resources>
