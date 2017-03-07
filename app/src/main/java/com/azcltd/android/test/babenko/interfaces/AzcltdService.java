@@ -10,6 +10,6 @@ import retrofit2.http.GET;
  */
 
 public interface AzcltdService {
-    @GET("/cities.json")
+    @GET("cities.json")
     Call<Cities> getCities();
 }
