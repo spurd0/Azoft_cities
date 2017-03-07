@@ -27,7 +27,7 @@ public class CitiesActivity extends AppCompatActivity {
     }
 
     private void requestCities() {
-        CitiesManager.getInstance(this).requestCities(new CitiesManager.CitiesRequestCallback() {
+        CitiesManager.getInstance().requestCities(new CitiesManager.CitiesRequestCallback() {
             @Override
             public void gotCities(Cities cities) {
                 if (BuildConfig.DEBUG) Log.d(TAG, cities.toString());

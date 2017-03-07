@@ -23,7 +23,7 @@ public class CitiesManager {
     private static CitiesManager sCitiesManager;
     private static final String TAG = "CitiesManager";
 
-    public static CitiesManager getInstance(Context context) {
+    public static CitiesManager getInstance() {
         if (sCitiesManager == null)
             sCitiesManager = new CitiesManager();
         return sCitiesManager;
