@@ -8,8 +8,6 @@ import com.azcltd.android.test.babenko.CitiesApplication;
 import com.azcltd.android.test.babenko.R;
 import com.azcltd.android.test.babenko.data.Cities;
 import com.azcltd.android.test.babenko.interfaces.AzcltdService;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,7 +31,7 @@ public class CitiesManager {
 
     public void requestCities(final CitiesRequestCallback callback) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(CitiesApplication.getContext().getString(R.string.azcltd_url))
+                .baseUrl(CitiesApplication.getContext().getString(R.string.azcltd_api_url))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

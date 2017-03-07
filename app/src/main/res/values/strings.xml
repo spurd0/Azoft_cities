@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">Azoft Cities</string>
-    <string name="azcltd_url">http://azcltd.com</string>
+    <string name="azcltd_api_url">http://azcltd.com/testTask/android</string>
 </resources>
