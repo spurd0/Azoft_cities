@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/city_element_height"
+    android:orientation="horizontal">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="3"
+        android:layout_height="match_parent"
+        android:id="@+id/cityElementName"
+        android:paddingLeft="@dimen/city_element_name_padding_left_right"
+        android:paddingRight="@dimen/city_element_name_padding_left_right"
+        />
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:id="@+id/cityElementImage"
+        android:paddingLeft="@dimen/city_element_image_padding_left_right"
+        android:paddingRight="@dimen/city_element_image_padding_left_right"
+        />
+
+
+</LinearLayout>
