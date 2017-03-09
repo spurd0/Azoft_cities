@@ -11,13 +11,18 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.azcltd.android.test.babenko.BuildConfig;
 import com.azcltd.android.test.babenko.R;
+import com.azcltd.android.test.babenko.adapters.CitiesAdapter;
 import com.azcltd.android.test.babenko.data.Cities;
+import com.azcltd.android.test.babenko.data.City;
 import com.azcltd.android.test.babenko.managers.CitiesManager;
+
+import java.util.ArrayList;
 
 public class CitiesActivity extends AppCompatActivity {
     private static final String TAG = "CitiesActivity";
     private ListView mCitiesLv;
     private TextView mConnectionErrorTv;
+    private ArrayList<City> mCitiesList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +46,7 @@ public class CitiesActivity extends AppCompatActivity {
                     return;
                 }
                 if (BuildConfig.DEBUG) Log.d(TAG, cities.toString());
+                initCitiesList(cities.cities);
                 /// TODO: 08/03/17 threadpool for loading images
             }
 
@@ -67,10 +73,17 @@ public class CitiesActivity extends AppCompatActivity {
                 .onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        // TODO: 08/03/17 show error tv
                         Log.d(TAG, "onNegative");
                     }
                 })
                 .cancelable(false)
                 .show();
+    }
+
+    private void initCitiesList(ArrayList<City> cities) {
+        mCitiesList = cities;
+        CitiesAdapter adapter = new CitiesAdapter(this, mCitiesList);
+        mCitiesLv.setAdapter(adapter);
     }
 }

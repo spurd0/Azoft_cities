@@ -2,12 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/city_element_height"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@drawable/city_selector">
 
     <TextView
         android:layout_width="0dp"
         android:layout_weight="3"
         android:layout_height="match_parent"
+        android:textColor="@android:color/black"
+        android:gravity="center_vertical"
         android:id="@+id/cityElementName"
         android:paddingLeft="@dimen/city_element_name_padding_left_right"
         android:paddingRight="@dimen/city_element_name_padding_left_right"
@@ -17,6 +20,7 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="match_parent"
+        android:gravity="center_vertical"
         android:id="@+id/cityElementImage"
         android:paddingLeft="@dimen/city_element_image_padding_left_right"
         android:paddingRight="@dimen/city_element_image_padding_left_right"
