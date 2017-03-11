@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.azcltd.android.test.babenko.R;
 import com.azcltd.android.test.babenko.data.Cities;
 import com.azcltd.android.test.babenko.data.City;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -41,7 +42,9 @@ public class CitiesAdapter extends ArrayAdapter<City> {
         TextView cityNameTextView = (TextView) cityElementView.findViewById(R.id.cityElementName);
         ImageView cityImageView = (ImageView) cityElementView.findViewById(R.id.cityElementImage);
         cityNameTextView.setText(mCitiesList.get(position).name);
-        //cityImageView.setImageAlpha();
+        String imageUrl = mContext.getResources().getString(R.string.azcltd_api_url) + "/" + mCitiesList.get(position).image_url;
+        Picasso.with(mContext).load(imageUrl).resize(50, 50)
+                .centerCrop().into(cityImageView); // TODO: 11/03/17 handle image error + calculate optimal size 
         return cityElementView;
     }
 }
