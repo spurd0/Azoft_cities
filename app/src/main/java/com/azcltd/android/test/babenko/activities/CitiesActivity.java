@@ -198,5 +198,7 @@ public class CitiesActivity extends AppCompatActivity {
             mServerErrorDialog.dismiss();
         if (mPermissionsDialog != null)
             mPermissionsDialog.dismiss();
+        if (mNoPermissionsDialog != null)
+            mNoPermissionsDialog.dismiss();
     }
 }
