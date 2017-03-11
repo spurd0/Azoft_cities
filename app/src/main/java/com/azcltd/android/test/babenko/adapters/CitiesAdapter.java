@@ -70,6 +70,7 @@ public class CitiesAdapter extends ArrayAdapter<City> {
                 Picasso.with(mContext).load(imageUrl)
                         .resize(size, size)
                         .centerInside()
+                        .error(R.drawable.question_mark)
                         .into(viewHolder.cityImageView); // TODO: 11/03/17 handle image error
             }
         });
