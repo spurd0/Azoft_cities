@@ -9,7 +9,7 @@
         android:layout_width="0dp"
         android:layout_weight="3"
         android:layout_height="match_parent"
-        android:textColor="@android:color/black"
+        android:textColor="@drawable/city_name_text_selector"
         android:gravity="center_vertical"
         android:id="@+id/cityElementName"
         android:paddingLeft="@dimen/city_element_name_padding_left_right"
