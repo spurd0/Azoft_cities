@@ -17,6 +17,7 @@ import com.azcltd.android.test.babenko.adapters.CitiesAdapter;
 import com.azcltd.android.test.babenko.data.Cities;
 import com.azcltd.android.test.babenko.data.City;
 import com.azcltd.android.test.babenko.managers.CitiesManager;
+import com.azcltd.android.test.babenko.managers.ImageManager;
 import com.azcltd.android.test.babenko.utils.UtilsHelper;
 
 import java.util.ArrayList;
@@ -134,10 +135,10 @@ public class CitiesActivity extends AppCompatActivity {
             @Override
             public void gotCities(Cities cities) {
                 if (cities == null || cities.cities.isEmpty()) {
-                    showServerErrorDialog(getString(R.string.error_dialog_null_response)); // TODO: 11/03/17 just show it in list 
+                    showServerErrorDialog(getString(R.string.error_dialog_null_response)); // TODO: 11/03/17 just show it in list
                     return;
                 }
-                if (BuildConfig.DEBUG) Log.d(TAG, cities.toString());
+                //if (BuildConfig.DEBUG) Log.d(TAG, cities.toString());
                 initCitiesList(cities.cities);
             }
 
@@ -181,7 +182,26 @@ public class CitiesActivity extends AppCompatActivity {
 
     private void initCitiesList(ArrayList<City> cities) {
         mCitiesList = cities;
-        CitiesAdapter adapter = new CitiesAdapter(this, mCitiesList);
+        final CitiesAdapter adapter = new CitiesAdapter(this, mCitiesList);
+        if (UtilsHelper.checkStoragePermissions(this))
+            for (final City city : cities)
+                if (!city.image_url.isEmpty())
+                    ImageManager.getInstance().downloadImage(city.image_url, new ImageManager.ImageCallback() {
+                        @Override
+                        public void imageDownloaded() {
+                            CitiesActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void failedToLoadImage() {
+                            if (BuildConfig.DEBUG) Log.e(TAG, "Failed to load image " + city.image_url);
+                        }
+                    });
         mCitiesLv.setAdapter(adapter);
     }
 

@@ -16,11 +16,6 @@ import java.io.File;
  */
 
 public class UtilsHelper {
-    public static boolean checkIfFileExists(String filename) {
-        File file = new File(filename);
-        return file.exists();
-    }
-
     private static void requestPermission(Activity activity, String[] permission, int code) {
         ActivityCompat.requestPermissions(
                 activity,
@@ -28,8 +23,8 @@ public class UtilsHelper {
                 code);
     }
 
-    public static boolean checkStoragePermissions(Activity activity) {
-        return checkPermission(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+    public static boolean checkStoragePermissions(Context context) {
+        return checkPermission(context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE});
     }
 

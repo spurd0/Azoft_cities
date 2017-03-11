@@ -1,6 +1,7 @@
 package com.azcltd.android.test.babenko.adapters;
 
 import android.content.Context;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -11,9 +12,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.azcltd.android.test.babenko.R;
+import com.azcltd.android.test.babenko.constants.ApplicationConstants;
 import com.azcltd.android.test.babenko.data.City;
+import com.azcltd.android.test.babenko.utils.UtilsHelper;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -61,17 +65,37 @@ public class CitiesAdapter extends ArrayAdapter<City> {
         viewHolder.cityImageView.post(new Runnable() {
             @Override
             public void run() {
-                String imageUrl = mContext.getResources().getString(R.string.azcltd_api_url)
-                        + "/" + getItem(position).image_url;
-
                 int size = viewHolder.cityImageView.getWidth() > viewHolder.cityImageView.getHeight() ?
                         viewHolder.cityImageView.getHeight() : viewHolder.cityImageView.getWidth();
+                String imageName = getItem(position).image_url;
 
-                Picasso.with(mContext).load(imageUrl)
-                        .resize(size, size)
-                        .centerInside()
-                        .error(R.drawable.question_mark)
-                        .into(viewHolder.cityImageView); // TODO: 11/03/17 handle image error
+                if (UtilsHelper.checkStoragePermissions(mContext)) {
+                    File imageFile = new File(
+                            Environment.getExternalStorageDirectory().getPath()
+                                    + "/" + ApplicationConstants.APPLICATION_FOLDER + "/" + imageName);
+                    if (!imageFile.exists()) {
+                        Picasso.with(mContext)
+                                .load(R.drawable.question_mark)
+                                .resize(size, size)
+                                .centerInside()
+                                .into(viewHolder.cityImageView);
+                        return;
+                    }
+                    Picasso.with(mContext).load(imageFile)
+                            .resize(size, size)
+                            .centerInside()
+                            .error(R.drawable.question_mark)
+                            .into(viewHolder.cityImageView);
+                } else {
+                    String imageUrl = mContext.getResources().getString(R.string.azcltd_api_url)
+                            + "/" + imageName;
+
+                    Picasso.with(mContext).load(imageUrl)
+                            .resize(size, size)
+                            .centerInside()
+                            .error(R.drawable.question_mark)
+                            .into(viewHolder.cityImageView);
+                }
             }
         });
         return convertView;
