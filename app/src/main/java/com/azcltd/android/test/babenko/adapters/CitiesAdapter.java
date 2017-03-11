@@ -1,8 +1,6 @@
 package com.azcltd.android.test.babenko.adapters;
 
 import android.content.Context;
-import android.support.annotation.IdRes;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -13,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.azcltd.android.test.babenko.R;
-import com.azcltd.android.test.babenko.data.Cities;
 import com.azcltd.android.test.babenko.data.City;
 import com.squareup.picasso.Picasso;
 
@@ -33,18 +30,49 @@ public class CitiesAdapter extends ArrayAdapter<City> {
         mCitiesList = objects;
     }
 
+    private static class ViewHolder {
+        ImageView cityImageView;
+        TextView cityNameTextView;
+    }
+
+    @Nullable
+    @Override
+    public City getItem(int position) {
+        return mCitiesList.get(position);
+    }
+
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) mContext
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View cityElementView = inflater.inflate(R.layout.city_adapter_element, parent, false);
-        TextView cityNameTextView = (TextView) cityElementView.findViewById(R.id.cityElementName);
-        ImageView cityImageView = (ImageView) cityElementView.findViewById(R.id.cityElementImage);
-        cityNameTextView.setText(mCitiesList.get(position).name);
-        String imageUrl = mContext.getResources().getString(R.string.azcltd_api_url) + "/" + mCitiesList.get(position).image_url;
-        Picasso.with(mContext).load(imageUrl).resize(50, 50)
-                .centerCrop().into(cityImageView); // TODO: 11/03/17 handle image error + calculate optimal size 
-        return cityElementView;
+    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        final ViewHolder viewHolder;
+
+        if (convertView == null || convertView.getTag() == null) {
+            LayoutInflater inflater = (LayoutInflater) mContext
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.city_adapter_element, parent, false);
+            viewHolder = new ViewHolder();
+            viewHolder.cityNameTextView = (TextView) convertView.findViewById(R.id.cityElementName);
+            viewHolder.cityImageView = (ImageView) convertView.findViewById(R.id.cityElementImage);
+        } else
+            viewHolder = (ViewHolder) convertView.getTag();
+
+        viewHolder.cityNameTextView.setText(getItem(position).name);
+
+        viewHolder.cityImageView.post(new Runnable() {
+            @Override
+            public void run() {
+                String imageUrl = mContext.getResources().getString(R.string.azcltd_api_url)
+                        + "/" + getItem(position).image_url;
+
+                int size = viewHolder.cityImageView.getWidth() > viewHolder.cityImageView.getHeight() ?
+                        viewHolder.cityImageView.getHeight() : viewHolder.cityImageView.getWidth();
+
+                Picasso.with(mContext).load(imageUrl)
+                        .resize(size, size)
+                        .centerInside()
+                        .into(viewHolder.cityImageView); // TODO: 11/03/17 handle image error
+            }
+        });
+        return convertView;
     }
 }
