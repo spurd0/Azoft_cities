@@ -2,6 +2,7 @@ package com.azcltd.android.test.babenko.activities;
 
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ public class CitiesActivity extends AppCompatActivity {
     private MaterialDialog mServerErrorDialog;
     private MaterialDialog mPermissionsDialog;
     private MaterialDialog mNoPermissionsDialog;
+    private MaterialDialog mDownloadingCitiesDialog;
     private boolean mPermissionsAsked;
 
     @Override
@@ -138,9 +140,27 @@ public class CitiesActivity extends AppCompatActivity {
     private void requestCities() {
         if (mCityList != null)
             return;
+        mDownloadingCitiesDialog = new MaterialDialog.Builder(this)
+                .title(R.string.loading_dialog_title)
+                .content(R.string.loading_dialog_content)
+                .cancelable(false)
+                .dismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        mDownloadingCitiesDialog = null;
+                    }
+                })
+                .progress(true, 0)
+                .show();
         CitiesManager.getInstance().requestCities(new CitiesManager.CitiesRequestCallback() {
             @Override
             public void gotCities(Cities cities) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDownloadingCitiesDialog.dismiss();
+                    }
+                }, 500);
                 boolean listIsEmpty = cities == null || cities.cities.isEmpty();
                 handleListState(listIsEmpty);
                 if (listIsEmpty) {
@@ -153,6 +173,7 @@ public class CitiesActivity extends AppCompatActivity {
             @Override
             public void responseError(Throwable t) {
                 if (BuildConfig.DEBUG) Log.e(TAG, t.toString());
+                mDownloadingCitiesDialog.dismiss();
                 showServerErrorDialog(t.getMessage());
             }
         });
@@ -236,5 +257,7 @@ public class CitiesActivity extends AppCompatActivity {
             mPermissionsDialog.dismiss();
         if (mNoPermissionsDialog != null)
             mNoPermissionsDialog.dismiss();
+        if (mDownloadingCitiesDialog != null)
+            mDownloadingCitiesDialog.dismiss();
     }
 }
