@@ -137,6 +137,8 @@ public class CitiesActivity extends AppCompatActivity {
     }
 
     private void requestCities() {
+        if (mCitiesList != null)
+            return;
         CitiesManager.getInstance().requestCities(new CitiesManager.CitiesRequestCallback() {
             @Override
             public void gotCities(Cities cities) {
