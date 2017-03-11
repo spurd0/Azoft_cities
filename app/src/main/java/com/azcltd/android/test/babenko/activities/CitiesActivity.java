@@ -48,8 +48,9 @@ public class CitiesActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (UtilsHelper.checkStoragePermissions(this) && mCitiesList == null) requestCities();
-        else if (!mPermissionsAsked) showPermissionsDialog();
+        if (UtilsHelper.checkStoragePermissions(this)) {
+            if (mCitiesList == null) requestCities();
+        } else if (!mPermissionsAsked) showPermissionsDialog();
     }
 
     private void showPermissionsDialog() {
@@ -138,7 +139,6 @@ public class CitiesActivity extends AppCompatActivity {
                 }
                 if (BuildConfig.DEBUG) Log.d(TAG, cities.toString());
                 initCitiesList(cities.cities);
-                /// TODO: 08/03/17 threadpool for loading images
             }
 
             @Override
