@@ -3,9 +3,8 @@
     <string name="azcltd_api_url">http://azcltd.com/testTask/android/</string>
     <string name="error_dialog_title">Error occurred</string>
     <string name="error_dialog_try_again">Try again</string>
-    <string name="error_dialog_null_response">Server returned empty list</string>
+    <string name="error_dialog_null_response">"Data is empty. You can try again later</string>
     <string name="cities_is_empty">Cities list empty</string>
-    <string name="error_receiving_cities">Can`t download cities</string>
     <string name="permissions_dialog_title">Application needs storage permission</string>
     <string name="permissions_dialog_content">Please provide storage permissions to store data</string>
     <string name="permissions_error_dialog_content">App needs permissions to store images, it will save your network traffic. Please enable it in settings</string>

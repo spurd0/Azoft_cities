@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -44,6 +45,11 @@ public class CitiesActivity extends AppCompatActivity {
     private void initViews() {
         mCitiesLv = (ListView) findViewById(R.id.citiesLv);
         mConnectionErrorTv = (TextView) findViewById(R.id.connectionErrorTv);
+    }
+
+    private void handleListState(boolean empty) {
+        mCitiesLv.setVisibility(empty ? View.INVISIBLE : View.VISIBLE);
+        mConnectionErrorTv.setVisibility(empty ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override
@@ -134,8 +140,9 @@ public class CitiesActivity extends AppCompatActivity {
         CitiesManager.getInstance().requestCities(new CitiesManager.CitiesRequestCallback() {
             @Override
             public void gotCities(Cities cities) {
-                if (cities == null || cities.cities.isEmpty()) {
-                    showServerErrorDialog(getString(R.string.error_dialog_null_response)); // TODO: 11/03/17 just show it in list
+                boolean listIsEmpty = cities == null || cities.cities.isEmpty();
+                handleListState(listIsEmpty);
+                if (listIsEmpty) {
                     return;
                 }
                 //if (BuildConfig.DEBUG) Log.d(TAG, cities.toString());
@@ -199,7 +206,8 @@ public class CitiesActivity extends AppCompatActivity {
 
                         @Override
                         public void failedToLoadImage() {
-                            if (BuildConfig.DEBUG) Log.e(TAG, "Failed to load image " + city.image_url);
+                            if (BuildConfig.DEBUG)
+                                Log.e(TAG, "Failed to load image " + city.image_url);
                         }
                     });
         mCitiesLv.setAdapter(adapter);
