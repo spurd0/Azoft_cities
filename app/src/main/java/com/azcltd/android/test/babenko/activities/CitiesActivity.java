@@ -28,7 +28,8 @@ public class CitiesActivity extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_CODE = 1;
     private ListView mCitiesLv;
     private TextView mConnectionErrorTv;
-    private ArrayList<City> mCitiesList;
+    private ArrayList<City> mCityList;
+    private CitiesAdapter mCitiesAdapter;
     private MaterialDialog mServerErrorDialog;
     private MaterialDialog mPermissionsDialog;
     private MaterialDialog mNoPermissionsDialog;
@@ -55,9 +56,9 @@ public class CitiesActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (UtilsHelper.checkStoragePermissions(this)) {
-            if (mCitiesList == null) requestCities();
-        } else if (!mPermissionsAsked) showPermissionsDialog();
+        if (mCityList == null) requestCities();
+        if (!UtilsHelper.checkStoragePermissions(this) && !mPermissionsAsked)
+            showPermissionsDialog();
     }
 
     private void showPermissionsDialog() {
@@ -81,7 +82,6 @@ public class CitiesActivity extends AppCompatActivity {
                 .onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        requestCities();
                         mPermissionsDialog.dismiss();
                     }
                 })
@@ -111,7 +111,6 @@ public class CitiesActivity extends AppCompatActivity {
                 .onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        requestCities();
                         mNoPermissionsDialog.dismiss();
                     }
                 })
@@ -128,7 +127,7 @@ public class CitiesActivity extends AppCompatActivity {
         switch (requestCode) {
             case STORAGE_PERMISSION_CODE:
                 if (granted)
-                    requestCities();
+                    downloadImages();
                 else showNoPermissionsDialog();
                 mPermissionsAsked = true;
                 break;
@@ -137,7 +136,7 @@ public class CitiesActivity extends AppCompatActivity {
     }
 
     private void requestCities() {
-        if (mCitiesList != null)
+        if (mCityList != null)
             return;
         CitiesManager.getInstance().requestCities(new CitiesManager.CitiesRequestCallback() {
             @Override
@@ -157,6 +156,31 @@ public class CitiesActivity extends AppCompatActivity {
                 showServerErrorDialog(t.getMessage());
             }
         });
+    }
+
+    private void downloadImages() {
+        if (UtilsHelper.checkStoragePermissions(this))
+            if (mCityList != null)
+                for (final City city : mCityList)
+                    if (!city.image_url.isEmpty())
+                        ImageManager.getInstance().downloadImage(city.image_url, new ImageManager.ImageCallback() {
+                            @Override
+                            public void imageDownloaded() {
+                                CitiesActivity.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (mCitiesAdapter != null)
+                                            mCitiesAdapter.notifyDataSetChanged();
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void failedToLoadImage() {
+                                if (BuildConfig.DEBUG)
+                                    Log.e(TAG, "Failed to load image " + city.image_url);
+                            }
+                        });
     }
 
     private void showServerErrorDialog(String content) {
@@ -190,29 +214,11 @@ public class CitiesActivity extends AppCompatActivity {
     }
 
     private void initCitiesList(ArrayList<City> cities) {
-        mCitiesList = cities;
-        final CitiesAdapter adapter = new CitiesAdapter(this, mCitiesList);
+        mCityList = cities;
+        mCitiesAdapter = new CitiesAdapter(this, mCityList);
+        mCitiesLv.setAdapter(mCitiesAdapter);
         if (UtilsHelper.checkStoragePermissions(this))
-            for (final City city : cities)
-                if (!city.image_url.isEmpty())
-                    ImageManager.getInstance().downloadImage(city.image_url, new ImageManager.ImageCallback() {
-                        @Override
-                        public void imageDownloaded() {
-                            CitiesActivity.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    adapter.notifyDataSetChanged();
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void failedToLoadImage() {
-                            if (BuildConfig.DEBUG)
-                                Log.e(TAG, "Failed to load image " + city.image_url);
-                        }
-                    });
-        mCitiesLv.setAdapter(adapter);
+            downloadImages();
     }
 
     @Override
