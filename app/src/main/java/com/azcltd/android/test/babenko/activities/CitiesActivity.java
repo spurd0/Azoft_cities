@@ -133,8 +133,8 @@ public class CitiesActivity extends AppCompatActivity {
         CitiesManager.getInstance().requestCities(new CitiesManager.CitiesRequestCallback() {
             @Override
             public void gotCities(Cities cities) {
-                if (cities == null) {
-                    showServerErrorDialog(getString(R.string.error_dialog_null_response));
+                if (cities == null || cities.cities.isEmpty()) {
+                    showServerErrorDialog(getString(R.string.error_dialog_null_response)); // TODO: 11/03/17 just show it in list 
                     return;
                 }
                 if (BuildConfig.DEBUG) Log.d(TAG, cities.toString());
