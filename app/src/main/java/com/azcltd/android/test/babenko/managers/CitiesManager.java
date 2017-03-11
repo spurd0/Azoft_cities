@@ -41,9 +41,7 @@ public class CitiesManager {
         call.enqueue(new Callback<Cities>() {
             @Override
             public void onResponse(Call<Cities> call, Response<Cities> response) {
-                if (BuildConfig.DEBUG) {
-                    Log.d(TAG, "got cities");
-                }
+                if (BuildConfig.DEBUG) Log.d(TAG, "got cities");
                 callback.gotCities(response.body());
             }
 
