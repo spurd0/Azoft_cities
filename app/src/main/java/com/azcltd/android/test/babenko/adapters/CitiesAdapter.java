@@ -1,6 +1,7 @@
 package com.azcltd.android.test.babenko.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,11 +28,18 @@ import java.util.List;
 public class CitiesAdapter extends ArrayAdapter<City> {
     private Context mContext;
     private List<City> mCitiesList;
+    private Picasso mPicasso;
 
     public CitiesAdapter(@NonNull Context context, @NonNull List<City> objects) {
         super(context, R.layout.city_adapter_element, objects);
         mContext = context;
         mCitiesList = objects;
+        mPicasso = new Picasso.Builder(mContext).listener(new Picasso.Listener() {
+            @Override
+            public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {
+                exception.printStackTrace();
+            }
+        }).build();
     }
 
     private static class ViewHolder {
@@ -74,14 +82,14 @@ public class CitiesAdapter extends ArrayAdapter<City> {
                             Environment.getExternalStorageDirectory().getPath()
                                     + "/" + ApplicationConstants.APPLICATION_FOLDER + "/" + imageName);
                     if (!imageFile.exists()) {
-                        Picasso.with(mContext)
+                        mPicasso
                                 .load(R.drawable.question_mark)
                                 .resize(size, size)
                                 .centerInside()
                                 .into(viewHolder.cityImageView);
                         return;
                     }
-                    Picasso.with(mContext).load(imageFile)
+                    mPicasso.load(imageFile)
                             .resize(size, size)
                             .centerInside()
                             .error(R.drawable.question_mark)
@@ -90,7 +98,7 @@ public class CitiesAdapter extends ArrayAdapter<City> {
                     String imageUrl = mContext.getResources().getString(R.string.azcltd_api_url)
                             + "/" + imageName;
 
-                    Picasso.with(mContext).load(imageUrl)
+                    mPicasso.load(imageUrl)
                             .resize(size, size)
                             .centerInside()
                             .error(R.drawable.question_mark)
