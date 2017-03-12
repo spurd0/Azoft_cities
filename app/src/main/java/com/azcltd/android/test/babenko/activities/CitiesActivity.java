@@ -64,6 +64,8 @@ public class CitiesActivity extends AppCompatActivity {
     }
 
     private void showPermissionsDialog() {
+        if (this.isFinishing()) //todo move to runnable & run in onresume if activity is finishing
+            return;
         mPermissionsDialog = new MaterialDialog.Builder(CitiesActivity.this)
                 .title(R.string.permissions_dialog_title)
                 .content(R.string.permissions_dialog_content)
@@ -93,6 +95,8 @@ public class CitiesActivity extends AppCompatActivity {
 
 
     private void showNoPermissionsDialog() {
+        if (this.isFinishing()) //todo move to runnable & run in onresume if activity is finishing
+            return;
         mNoPermissionsDialog = new MaterialDialog.Builder(CitiesActivity.this)
                 .title(R.string.permissions_dialog_title)
                 .content(R.string.permissions_error_dialog_content)
@@ -205,6 +209,8 @@ public class CitiesActivity extends AppCompatActivity {
     }
 
     private void showServerErrorDialog(String content) {
+        if (this.isFinishing()) //todo move to runnable & run in onresume if activity is finishing
+            return;
         mServerErrorDialog = new MaterialDialog.Builder(CitiesActivity.this)
                 .title(R.string.error_dialog_title)
                 .content(content)
