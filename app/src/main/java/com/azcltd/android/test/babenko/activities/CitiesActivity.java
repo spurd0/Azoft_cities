@@ -202,7 +202,6 @@ public class CitiesActivity extends AppCompatActivity {
                                     public void run() {
                                         mDownloadedImagesList.add(fileName);
                                         mCitiesAdapter.updateDownloadedImagesList(mDownloadedImagesList);
-                                        mCitiesLv.invalidateViews();
                                     }
                                 });
                             }

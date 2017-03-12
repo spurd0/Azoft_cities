@@ -91,10 +91,7 @@ public class CitiesAdapter extends ArrayAdapter<City> {
                             Environment.getExternalStorageDirectory().getPath()
                                     + "/" + ApplicationConstants.APPLICATION_FOLDER + "/" + imageName);
                     if (!imageFile.exists() || !mDownloadedImagesList.contains(imageName)) {
-                        mPicasso.load(R.drawable.question_mark)
-                                .resize(size, size)
-                                .centerInside()
-                                .into(viewHolder.cityImageView);
+                        loadImageByUrl(imageName, size, viewHolder.cityImageView);
                         return;
                     }
                     mPicasso.load(imageFile)
@@ -102,18 +99,21 @@ public class CitiesAdapter extends ArrayAdapter<City> {
                             .centerInside()
                             .error(R.drawable.question_mark)
                             .into(viewHolder.cityImageView);
-                } else {
-                    String imageUrl = mContext.getResources().getString(R.string.azcltd_api_url)
-                            + "/" + imageName;
-
-                    mPicasso.load(imageUrl)
-                            .resize(size, size)
-                            .centerInside()
-                            .error(R.drawable.question_mark)
-                            .into(viewHolder.cityImageView);
-                }
+                } else
+                    loadImageByUrl(imageName, size, viewHolder.cityImageView);
             }
         });
         return convertView;
+    }
+
+    private void loadImageByUrl(String imageName, int size, ImageView target) {
+        String imageUrl = mContext.getResources().getString(R.string.azcltd_api_url)
+                + "/" + imageName;
+
+        mPicasso.load(imageUrl)
+                .resize(size, size)
+                .centerInside()
+                .error(R.drawable.question_mark)
+                .into(target);
     }
 }
