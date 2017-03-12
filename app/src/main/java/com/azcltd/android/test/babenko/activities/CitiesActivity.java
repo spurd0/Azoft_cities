@@ -59,12 +59,14 @@ public class CitiesActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (mCityList == null) requestCities();
-        if (!UtilsHelper.checkStoragePermissions(this) && !mPermissionsAsked)
+        if (!UtilsHelper.checkStoragePermissions(this) && !mPermissionsAsked && mNoPermissionsDialog == null)
             showPermissionsDialog();
     }
 
     private void showPermissionsDialog() {
         if (this.isFinishing()) //todo move to runnable & run in onresume if activity is finishing
+            return;
+        if (mPermissionsDialog != null)
             return;
         mPermissionsDialog = new MaterialDialog.Builder(CitiesActivity.this)
                 .title(R.string.permissions_dialog_title)
@@ -194,8 +196,9 @@ public class CitiesActivity extends AppCompatActivity {
                                 CitiesActivity.this.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        if (mCitiesAdapter != null)
-                                            mCitiesAdapter.notifyDataSetChanged();
+//                                        if (mCitiesAdapter != null)
+//                                            mCitiesAdapter.notifyDataSetInvalidated();
+                                        mCitiesLv.invalidateViews();
                                     }
                                 });
                             }
