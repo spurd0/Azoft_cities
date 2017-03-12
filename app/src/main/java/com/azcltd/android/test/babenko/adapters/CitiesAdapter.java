@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.azcltd.android.test.babenko.BuildConfig;
 import com.azcltd.android.test.babenko.R;
 import com.azcltd.android.test.babenko.constants.ApplicationConstants;
 import com.azcltd.android.test.babenko.data.City;
@@ -29,17 +31,24 @@ public class CitiesAdapter extends ArrayAdapter<City> {
     private Context mContext;
     private List<City> mCitiesList;
     private Picasso mPicasso;
+    private List<String> mDownloadedImagesList;
 
-    public CitiesAdapter(@NonNull Context context, @NonNull List<City> objects) {
+    public CitiesAdapter(@NonNull Context context, @NonNull List<City> objects,
+                         List<String> downloadedImagesList) {
         super(context, R.layout.city_adapter_element, objects);
         mContext = context;
         mCitiesList = objects;
+        mDownloadedImagesList = downloadedImagesList;
         mPicasso = new Picasso.Builder(mContext).listener(new Picasso.Listener() {
             @Override
             public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {
-                exception.printStackTrace();
+                if (BuildConfig.DEBUG) exception.printStackTrace();
             }
         }).build();
+    }
+
+    public void updateDownloadedImagesList(List<String> downloadedImagesList) {
+        mDownloadedImagesList = downloadedImagesList;
     }
 
     private static class ViewHolder {
@@ -81,9 +90,8 @@ public class CitiesAdapter extends ArrayAdapter<City> {
                     File imageFile = new File(
                             Environment.getExternalStorageDirectory().getPath()
                                     + "/" + ApplicationConstants.APPLICATION_FOLDER + "/" + imageName);
-                    if (!imageFile.exists()) {
-                        mPicasso
-                                .load(R.drawable.question_mark)
+                    if (!imageFile.exists() || !mDownloadedImagesList.contains(imageName)) {
+                        mPicasso.load(R.drawable.question_mark)
                                 .resize(size, size)
                                 .centerInside()
                                 .into(viewHolder.cityImageView);

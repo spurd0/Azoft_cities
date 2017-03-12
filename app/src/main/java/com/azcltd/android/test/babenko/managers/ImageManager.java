@@ -40,7 +40,7 @@ public class ImageManager {
                 Environment.getExternalStorageDirectory().getPath()
                         + "/" + ApplicationConstants.APPLICATION_FOLDER + "/" + imageName);
         if (file.exists()) {
-            callback.imageDownloaded();
+            callback.imageDownloaded(imageName);
             return;
         }
         String imageUrl = CitiesApplication.getContext().getResources().getString(R.string.azcltd_api_url) + imageName;
@@ -66,10 +66,10 @@ public class ImageManager {
                             FileOutputStream ostream = new FileOutputStream(file);
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
                             ostream.close();
-                            callback.imageDownloaded();
+                            callback.imageDownloaded(fileName);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            callback.failedToLoadImage();
+                            callback.failedToLoadImage(fileName);
                         }
                     }
                 }).start();
@@ -77,7 +77,7 @@ public class ImageManager {
 
             @Override
             public void onBitmapFailed(Drawable errorDrawable) {
-                callback.failedToLoadImage();
+                callback.failedToLoadImage(fileName);
             }
 
             @Override
@@ -87,7 +87,7 @@ public class ImageManager {
     }
 
     public interface ImageCallback {
-        void imageDownloaded();
-        void failedToLoadImage();
+        void imageDownloaded(String fileName);
+        void failedToLoadImage(String fileName);
     }
 }

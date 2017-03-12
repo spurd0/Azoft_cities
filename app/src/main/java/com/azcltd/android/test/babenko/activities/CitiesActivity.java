@@ -25,6 +25,7 @@ import com.azcltd.android.test.babenko.managers.ImageManager;
 import com.azcltd.android.test.babenko.utils.UtilsHelper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CitiesActivity extends AppCompatActivity {
     private static final String TAG = "CitiesActivity";
@@ -32,6 +33,7 @@ public class CitiesActivity extends AppCompatActivity {
     private ListView mCitiesLv;
     private TextView mConnectionErrorTv;
     private ArrayList<City> mCityList;
+    private ArrayList<String> mDownloadedImagesList;
     private CitiesAdapter mCitiesAdapter;
     private MaterialDialog mServerErrorDialog;
     private MaterialDialog mPermissionsDialog;
@@ -189,26 +191,30 @@ public class CitiesActivity extends AppCompatActivity {
 
     private void downloadImages() {
         if (UtilsHelper.checkStoragePermissions(this))
-            if (mCityList != null)
+            if (mCityList != null) {
+                List<String> fileList = new ArrayList<String>();
                 for (final City city : mCityList)
                     if (!city.image_url.isEmpty())
                         ImageManager.getInstance().downloadImage(city.image_url, new ImageManager.ImageCallback() {
                             @Override
-                            public void imageDownloaded() {
+                            public void imageDownloaded(final String fileName) {
                                 CitiesActivity.this.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
+                                        mDownloadedImagesList.add(fileName);
+                                        mCitiesAdapter.updateDownloadedImagesList(mDownloadedImagesList);
                                         mCitiesLv.invalidateViews();
                                     }
                                 });
                             }
 
                             @Override
-                            public void failedToLoadImage() {
+                            public void failedToLoadImage(String fileName) {
                                 if (BuildConfig.DEBUG)
-                                    Log.e(TAG, "Failed to load image " + city.image_url);
+                                    Log.e(TAG, "Failed to load image " + fileName);
                             }
                         });
+            }
     }
 
     private void showServerErrorDialog(String content) {
@@ -234,6 +240,8 @@ public class CitiesActivity extends AppCompatActivity {
                 .onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        // TODO: 08/03/17 show error tv
+                        Log.d(TAG, "onNegative");
                         mServerErrorDialog.dismiss();
                     }
                 })
@@ -243,7 +251,8 @@ public class CitiesActivity extends AppCompatActivity {
 
     private void initCitiesList(ArrayList<City> cities) {
         mCityList = cities;
-        mCitiesAdapter = new CitiesAdapter(this, mCityList);
+        mDownloadedImagesList = new ArrayList<>();
+        mCitiesAdapter = new CitiesAdapter(this, mCityList, mDownloadedImagesList);
         mCitiesLv.setAdapter(mCitiesAdapter);
         mCitiesLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
