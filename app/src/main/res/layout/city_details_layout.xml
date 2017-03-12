@@ -20,6 +20,11 @@
 
             <TextView
                 android:id="@+id/city_details_description"
+                android:paddingEnd="@dimen/city_description_padding_left_right"
+                android:paddingRight="@dimen/city_description_padding_left_right"
+                android:paddingStart="@dimen/city_description_padding_left_right"
+                android:paddingLeft="@dimen/city_description_padding_left_right"
+                android:paddingTop="@dimen/city_description_padding_top"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
