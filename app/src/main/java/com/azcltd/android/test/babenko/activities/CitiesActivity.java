@@ -1,6 +1,7 @@
 package com.azcltd.android.test.babenko.activities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -8,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -245,6 +247,16 @@ public class CitiesActivity extends AppCompatActivity {
         mCityList = cities;
         mCitiesAdapter = new CitiesAdapter(this, mCityList);
         mCitiesLv.setAdapter(mCitiesAdapter);
+        mCitiesLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                City clickedCity = mCitiesAdapter.getItem(position);
+                Intent intent = new Intent(CitiesActivity.this, CityDetailsActivity.class);
+                intent.putExtra(CityDetailsActivity.DESCRIPTION_KEY, clickedCity.description);
+                intent.putExtra(CityDetailsActivity.IMAGE_PATH_KEY, clickedCity.image_url);
+                CitiesActivity.this.startActivity(intent);
+            }
+        });
         if (UtilsHelper.checkStoragePermissions(this))
             downloadImages();
     }
