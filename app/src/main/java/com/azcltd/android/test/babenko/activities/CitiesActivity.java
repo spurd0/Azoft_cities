@@ -238,8 +238,6 @@ public class CitiesActivity extends AppCompatActivity {
                 .onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        // TODO: 08/03/17 show error tv
-                        Log.d(TAG, "onNegative");
                         mServerErrorDialog.dismiss();
                     }
                 })
