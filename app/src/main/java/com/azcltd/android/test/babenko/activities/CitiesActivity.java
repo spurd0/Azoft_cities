@@ -23,7 +23,6 @@ import com.azcltd.android.test.babenko.managers.ImageManager;
 import com.azcltd.android.test.babenko.utils.UtilsHelper;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class CitiesActivity extends AppCompatActivity {
     private static final String TAG = "CitiesActivity";
@@ -187,40 +186,29 @@ public class CitiesActivity extends AppCompatActivity {
     }
 
     private void downloadImages() {
-        final AtomicInteger counter = new AtomicInteger(0);
         if (UtilsHelper.checkStoragePermissions(this))
             if (mCityList != null)
                 for (final City city : mCityList)
-                    if (!city.image_url.isEmpty()) {
-                        counter.incrementAndGet();
+                    if (!city.image_url.isEmpty())
                         ImageManager.getInstance().downloadImage(city.image_url, new ImageManager.ImageCallback() {
                             @Override
                             public void imageDownloaded() {
-                                if (BuildConfig.DEBUG)
-                                    Log.d(TAG, "Image loaded " + city.image_url);
-                                if (counter.decrementAndGet() == 0)
-                                    CitiesActivity.this.runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            mCitiesLv.invalidateViews();
-                                        }
-                                    });
+                                CitiesActivity.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+//                                        if (mCitiesAdapter != null)
+//                                            mCitiesAdapter.notifyDataSetInvalidated();
+                                        mCitiesLv.invalidateViews();
+                                    }
+                                });
                             }
 
                             @Override
                             public void failedToLoadImage() {
                                 if (BuildConfig.DEBUG)
                                     Log.e(TAG, "Failed to load image " + city.image_url);
-                                if (counter.decrementAndGet() == 0)
-                                    CitiesActivity.this.runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            mCitiesLv.invalidateViews();
-                                        }
-                                    });
                             }
                         });
-                    }
     }
 
     private void showServerErrorDialog(String content) {
