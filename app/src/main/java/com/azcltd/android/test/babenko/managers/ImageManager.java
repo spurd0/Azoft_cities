@@ -1,10 +1,8 @@
 package com.azcltd.android.test.babenko.managers;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
-import android.util.Log;
 
 import com.azcltd.android.test.babenko.CitiesApplication;
 import com.azcltd.android.test.babenko.R;

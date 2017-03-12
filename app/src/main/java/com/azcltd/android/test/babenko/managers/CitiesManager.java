@@ -1,6 +1,5 @@
 package com.azcltd.android.test.babenko.managers;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.azcltd.android.test.babenko.BuildConfig;
