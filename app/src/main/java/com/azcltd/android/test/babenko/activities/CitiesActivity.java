@@ -191,8 +191,7 @@ public class CitiesActivity extends AppCompatActivity {
 
     private void downloadImages() {
         if (UtilsHelper.checkStoragePermissions(this))
-            if (mCityList != null) {
-                List<String> fileList = new ArrayList<String>();
+            if (mCityList != null)
                 for (final City city : mCityList)
                     if (!city.image_url.isEmpty())
                         ImageManager.getInstance().downloadImage(city.image_url, new ImageManager.ImageCallback() {
@@ -214,7 +213,6 @@ public class CitiesActivity extends AppCompatActivity {
                                     Log.e(TAG, "Failed to load image " + fileName);
                             }
                         });
-            }
     }
 
     private void showServerErrorDialog(String content) {
