@@ -196,8 +196,6 @@ public class CitiesActivity extends AppCompatActivity {
                                 CitiesActivity.this.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-//                                        if (mCitiesAdapter != null)
-//                                            mCitiesAdapter.notifyDataSetInvalidated();
                                         mCitiesLv.invalidateViews();
                                     }
                                 });
