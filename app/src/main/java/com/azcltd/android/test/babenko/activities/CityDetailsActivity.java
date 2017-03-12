@@ -33,15 +33,18 @@ public class CityDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.city_details_layout);
         initViews();
+        handleIntent();
     }
 
     private void initViews() {
         mCityImage = (ImageView) findViewById(R.id.city_details_image);
         mCityDescription = (TextView) findViewById(R.id.city_details_description);
+    }
+
+    private void handleIntent() {
         Intent intent = getIntent();
         String description = intent.getExtras().getString(DESCRIPTION_KEY);
         final String imagePath = intent.getExtras().getString(IMAGE_PATH_KEY);
-        Log.d(TAG, "imagepath " + imagePath);
         mCityDescription.setText(description);
         mCityImage.post(new Runnable() {
             @Override

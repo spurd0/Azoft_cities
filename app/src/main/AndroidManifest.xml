@@ -24,9 +24,7 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".activities.CityDetailsActivity"
-            android:configChanges="orientation|screenSize"></activity>
+        <activity android:name=".activities.CityDetailsActivity"></activity>
     </application>
 
 </manifest>
