@@ -45,7 +45,7 @@ public class CityDetailsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String description = intent.getExtras().getString(DESCRIPTION_KEY);
         final String imagePath = intent.getExtras().getString(IMAGE_PATH_KEY);
-        mCityDescription.setText(description);
+        mCityDescription.setText(description.isEmpty() ? getString(R.string.empty_description) : description);
         mCityImage.post(new Runnable() {
             @Override
             public void run() {

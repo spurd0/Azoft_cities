@@ -10,4 +10,5 @@
     <string name="permissions_error_dialog_content">App needs permissions to store images, it will save your network traffic. Please enable it in settings</string>
     <string name="loading_dialog_title">Loading…</string>
     <string name="loading_dialog_content">Loading cities list</string>
+    <string name="empty_description">Sorry, no description available</string>
 </resources>
