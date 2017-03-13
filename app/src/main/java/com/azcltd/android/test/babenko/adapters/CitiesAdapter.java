@@ -83,15 +83,20 @@ public class CitiesAdapter extends ArrayAdapter<City> {
                     imageFile = new File(
                             Environment.getExternalStorageDirectory().getPath()
                                     + "/" + ApplicationConstants.APPLICATION_FOLDER + "/" + imageName);
-                 else
+                else
                     imageFile = new File(
                             mContext.getFilesDir().getPath()
                                     + "/" + ApplicationConstants.APPLICATION_FOLDER + "/" + imageName);
 
-                mPicasso.load(imageFile)
+                if (imageFile.exists())
+                    mPicasso.load(imageFile)
+                            .resize(size, size)
+                            .centerInside()
+                            .error(R.drawable.question_mark)
+                            .into(viewHolder.cityImageView);
+                else mPicasso.load(R.drawable.question_mark)
                         .resize(size, size)
                         .centerInside()
-                        .error(R.drawable.question_mark)
                         .into(viewHolder.cityImageView);
             }
         });
