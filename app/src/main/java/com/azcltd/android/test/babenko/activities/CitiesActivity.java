@@ -25,7 +25,7 @@ import com.azcltd.android.test.babenko.managers.ImageManager;
 import com.azcltd.android.test.babenko.utils.UtilsHelper;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CitiesActivity extends AppCompatActivity {
     private static final String TAG = "CitiesActivity";
@@ -33,7 +33,6 @@ public class CitiesActivity extends AppCompatActivity {
     private ListView mCitiesLv;
     private TextView mConnectionErrorTv;
     private ArrayList<City> mCityList;
-    private ArrayList<String> mDownloadedImagesList;
     private CitiesAdapter mCitiesAdapter;
     private MaterialDialog mServerErrorDialog;
     private MaterialDialog mPermissionsDialog;
@@ -138,9 +137,9 @@ public class CitiesActivity extends AppCompatActivity {
                 granted = false;
         switch (requestCode) {
             case STORAGE_PERMISSION_CODE:
-                if (granted)
-                    downloadImages();
-                else showNoPermissionsDialog();
+//                if (granted)
+//                    downloadImages();
+//                else showNoPermissionsDialog();
                 mPermissionsAsked = true;
                 break;
         }
@@ -177,7 +176,7 @@ public class CitiesActivity extends AppCompatActivity {
                     return;
                 }
                 //if (BuildConfig.DEBUG) Log.d(TAG, cities.toString());
-                initCitiesList(cities.cities);
+                receivedCitiesList(cities.cities);
             }
 
             @Override
@@ -189,29 +188,37 @@ public class CitiesActivity extends AppCompatActivity {
         });
     }
 
-    private void downloadImages() {
-        if (UtilsHelper.checkStoragePermissions(this))
-            if (mCityList != null)
-                for (final City city : mCityList)
-                    if (!city.image_url.isEmpty())
-                        ImageManager.getInstance().downloadImage(city.image_url, new ImageManager.ImageCallback() {
-                            @Override
-                            public void imageDownloaded(final String fileName) {
-                                CitiesActivity.this.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        mDownloadedImagesList.add(fileName);
-                                        mCitiesAdapter.updateDownloadedImagesList(mDownloadedImagesList);
-                                    }
-                                });
-                            }
+    private void downloadImages(boolean permitted) {
+        ArrayList<String> imagesToDownload = new ArrayList<>();
+        for (final City city : mCityList)
+            if (!city.image_url.isEmpty())
+                imagesToDownload.add(city.image_url);
+        final AtomicInteger count = new AtomicInteger(imagesToDownload.size());
 
-                            @Override
-                            public void failedToLoadImage(String fileName) {
-                                if (BuildConfig.DEBUG)
-                                    Log.e(TAG, "Failed to load image " + fileName);
-                            }
-                        });
+        for (String image_url : imagesToDownload)
+            ImageManager.getInstance().downloadImage(image_url, permitted, new ImageManager.ImageCallback() {
+                @Override
+                public void imageDownloaded(final String fileName) {
+                    handleImageLoad(count);
+                }
+
+                @Override
+                public void failedToLoadImage(String fileName) {
+                    if (BuildConfig.DEBUG)
+                        Log.e(TAG, "Failed to load image " + fileName);
+                    handleImageLoad(count);
+                }
+            });
+    }
+
+    private void handleImageLoad(AtomicInteger count) {
+        if (count.decrementAndGet() == 0)
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    initCitiesListView();
+                }
+            });
     }
 
     private void showServerErrorDialog(String content) {
@@ -244,10 +251,13 @@ public class CitiesActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void initCitiesList(ArrayList<City> cities) {
+    private void receivedCitiesList(ArrayList<City> cities) {
         mCityList = cities;
-        mDownloadedImagesList = new ArrayList<>();
-        mCitiesAdapter = new CitiesAdapter(this, mCityList, mDownloadedImagesList);
+        downloadImages(UtilsHelper.checkStoragePermissions(this));
+    }
+
+    private void initCitiesListView() {
+        mCitiesAdapter = new CitiesAdapter(this, mCityList);
         mCitiesLv.setAdapter(mCitiesAdapter);
         mCitiesLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -259,8 +269,6 @@ public class CitiesActivity extends AppCompatActivity {
                 CitiesActivity.this.startActivity(intent);
             }
         });
-        if (UtilsHelper.checkStoragePermissions(this))
-            downloadImages();
     }
 
     @Override

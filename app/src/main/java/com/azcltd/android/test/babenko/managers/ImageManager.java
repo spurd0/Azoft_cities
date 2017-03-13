@@ -35,9 +35,14 @@ public class ImageManager {
         return sImageManager;
     }
 
-    public void downloadImage(String imageName, ImageCallback callback) {
-        File file = new File(
-                Environment.getExternalStorageDirectory().getPath()
+    public void downloadImage(String imageName, boolean externalDir, ImageCallback callback) {
+        File file;
+        if (externalDir)
+            file = new File(
+                    Environment.getExternalStorageDirectory().getPath()
+                            + "/" + ApplicationConstants.APPLICATION_FOLDER + "/" + imageName);
+        else file = new File(
+                CitiesApplication.getContext().getFilesDir().getPath()
                         + "/" + ApplicationConstants.APPLICATION_FOLDER + "/" + imageName);
         if (file.exists()) {
             callback.imageDownloaded(imageName);
@@ -88,6 +93,7 @@ public class ImageManager {
 
     public interface ImageCallback {
         void imageDownloaded(String fileName);
+
         void failedToLoadImage(String fileName);
     }
 }

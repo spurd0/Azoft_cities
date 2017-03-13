@@ -31,24 +31,17 @@ public class CitiesAdapter extends ArrayAdapter<City> {
     private Context mContext;
     private List<City> mCitiesList;
     private Picasso mPicasso;
-    private List<String> mDownloadedImagesList;
 
-    public CitiesAdapter(@NonNull Context context, @NonNull List<City> objects,
-                         List<String> downloadedImagesList) {
+    public CitiesAdapter(@NonNull Context context, @NonNull List<City> objects) {
         super(context, R.layout.city_adapter_element, objects);
         mContext = context;
         mCitiesList = objects;
-        mDownloadedImagesList = downloadedImagesList;
         mPicasso = new Picasso.Builder(mContext).listener(new Picasso.Listener() {
             @Override
             public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {
                 if (BuildConfig.DEBUG) exception.printStackTrace();
             }
         }).build();
-    }
-
-    public void updateDownloadedImagesList(List<String> downloadedImagesList) {
-        mDownloadedImagesList = downloadedImagesList;
     }
 
     private static class ViewHolder {
@@ -85,35 +78,23 @@ public class CitiesAdapter extends ArrayAdapter<City> {
                 int size = viewHolder.cityImageView.getWidth() > viewHolder.cityImageView.getHeight() ?
                         viewHolder.cityImageView.getHeight() : viewHolder.cityImageView.getWidth();
                 String imageName = getItem(position).image_url;
-
-                if (UtilsHelper.checkStoragePermissions(mContext)) {
-                    File imageFile = new File(
+                File imageFile;
+                if (UtilsHelper.checkStoragePermissions(mContext))
+                    imageFile = new File(
                             Environment.getExternalStorageDirectory().getPath()
                                     + "/" + ApplicationConstants.APPLICATION_FOLDER + "/" + imageName);
-                    if (!imageFile.exists() || !mDownloadedImagesList.contains(imageName)) {
-                        loadImageByUrl(imageName, size, viewHolder.cityImageView);
-                        return;
-                    }
-                    mPicasso.load(imageFile)
-                            .resize(size, size)
-                            .centerInside()
-                            .error(R.drawable.question_mark)
-                            .into(viewHolder.cityImageView);
-                } else
-                    loadImageByUrl(imageName, size, viewHolder.cityImageView);
+                 else
+                    imageFile = new File(
+                            mContext.getFilesDir().getPath()
+                                    + "/" + ApplicationConstants.APPLICATION_FOLDER + "/" + imageName);
+
+                mPicasso.load(imageFile)
+                        .resize(size, size)
+                        .centerInside()
+                        .error(R.drawable.question_mark)
+                        .into(viewHolder.cityImageView);
             }
         });
         return convertView;
-    }
-
-    private void loadImageByUrl(String imageName, int size, ImageView target) {
-        String imageUrl = mContext.getResources().getString(R.string.azcltd_api_url)
-                + "/" + imageName;
-
-        mPicasso.load(imageUrl)
-                .resize(size, size)
-                .centerInside()
-                .error(R.drawable.question_mark)
-                .into(target);
     }
 }
