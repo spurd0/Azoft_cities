@@ -61,9 +61,11 @@ public class CitiesActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (mCityList == null) requestCities();
-        if (!UtilsHelper.checkStoragePermissions(this) && !mPermissionsAsked && mNoPermissionsDialog == null)
-            showPermissionsDialog();
+        if (mCityList == null)
+            if (!UtilsHelper.checkStoragePermissions(this) && !mPermissionsAsked
+                    && mNoPermissionsDialog == null)
+                showPermissionsDialog();
+            else requestCities();
     }
 
     private void showPermissionsDialog() {
@@ -91,6 +93,7 @@ public class CitiesActivity extends AppCompatActivity {
                 .onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        requestCities();
                         mPermissionsDialog.dismiss();
                     }
                 })
@@ -122,6 +125,7 @@ public class CitiesActivity extends AppCompatActivity {
                 .onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        requestCities();
                         mNoPermissionsDialog.dismiss();
                     }
                 })
@@ -137,9 +141,9 @@ public class CitiesActivity extends AppCompatActivity {
                 granted = false;
         switch (requestCode) {
             case STORAGE_PERMISSION_CODE:
-//                if (granted)
-//                    downloadImages();
-//                else showNoPermissionsDialog();
+                if (granted)
+                    requestCities();
+                else showNoPermissionsDialog();
                 mPermissionsAsked = true;
                 break;
         }
@@ -164,12 +168,6 @@ public class CitiesActivity extends AppCompatActivity {
         CitiesManager.getInstance().requestCities(new CitiesManager.CitiesRequestCallback() {
             @Override
             public void gotCities(Cities cities) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDownloadingCitiesDialog.dismiss();
-                    }
-                }, 500);
                 boolean listIsEmpty = cities == null || cities.cities.isEmpty();
                 handleListState(listIsEmpty);
                 if (listIsEmpty) {
@@ -216,6 +214,7 @@ public class CitiesActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    mDownloadingCitiesDialog.dismiss();
                     initCitiesListView();
                 }
             });
