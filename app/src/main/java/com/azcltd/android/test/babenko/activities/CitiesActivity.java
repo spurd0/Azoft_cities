@@ -171,8 +171,8 @@ public class CitiesActivity extends AppCompatActivity {
             @Override
             public void gotCities(Cities cities) {
                 boolean listIsEmpty = cities == null || cities.cities.isEmpty();
-                handleListState(listIsEmpty);
                 if (listIsEmpty) {
+                    handleListState(listIsEmpty);
                     return;
                 }
                 //if (BuildConfig.DEBUG) Log.d(TAG, cities.toString());
@@ -270,6 +270,7 @@ public class CitiesActivity extends AppCompatActivity {
                 CitiesActivity.this.startActivity(intent);
             }
         });
+        handleListState(false);
     }
 
     @Override

@@ -42,6 +42,7 @@ public class CitiesAdapter extends ArrayAdapter<City> {
                 if (BuildConfig.DEBUG) exception.printStackTrace();
             }
         }).build();
+        if (BuildConfig.DEBUG) mPicasso.setLoggingEnabled(true);
     }
 
     private static class ViewHolder {
