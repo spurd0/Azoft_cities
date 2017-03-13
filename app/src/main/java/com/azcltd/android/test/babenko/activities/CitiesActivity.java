@@ -65,6 +65,8 @@ public class CitiesActivity extends AppCompatActivity {
             if (!UtilsHelper.checkStoragePermissions(this) && !mPermissionsAsked
                     && mNoPermissionsDialog == null)
                 showPermissionsDialog();
+            else if (mPermissionsAsked)
+                return;
             else requestCities();
     }
 

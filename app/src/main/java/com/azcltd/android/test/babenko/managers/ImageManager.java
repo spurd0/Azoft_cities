@@ -49,12 +49,12 @@ public class ImageManager {
             return;
         }
         String imageUrl = CitiesApplication.getContext().getResources().getString(R.string.azcltd_api_url) + imageName;
-        Target target = prepareImageTarget(imageName, callback);
+        Target target = prepareImageTarget(imageName, externalDir, callback);
         mTargets.add(target);
         Picasso.with(CitiesApplication.getContext()).load(imageUrl).into(target);
     }
 
-    private Target prepareImageTarget(final String fileName, final ImageCallback callback) {
+    private Target prepareImageTarget(final String imageName, final boolean externalDir, final ImageCallback callback) {
         return new Target() {
             @Override
             public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -62,19 +62,25 @@ public class ImageManager {
                     @Override
                     public void run() {
 
-                        File file = new File(
-                                Environment.getExternalStorageDirectory().getPath()
-                                        + "/" + ApplicationConstants.APPLICATION_FOLDER + "/" + fileName);
+                        File file;
+                        if (externalDir)
+                            file = new File(
+                                    Environment.getExternalStorageDirectory().getPath()
+                                            + "/" + ApplicationConstants.APPLICATION_FOLDER + "/" + imageName);
+                        else file = new File(
+                                CitiesApplication.getContext().getFilesDir().getPath()
+                                        + "/" + ApplicationConstants.APPLICATION_FOLDER + "/" + imageName);
+
                         file.getParentFile().mkdirs();
                         try {
                             file.createNewFile();
                             FileOutputStream ostream = new FileOutputStream(file);
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
                             ostream.close();
-                            callback.imageDownloaded(fileName);
+                            callback.imageDownloaded(imageName);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            callback.failedToLoadImage(fileName);
+                            callback.failedToLoadImage(imageName);
                         }
                     }
                 }).start();
@@ -82,7 +88,7 @@ public class ImageManager {
 
             @Override
             public void onBitmapFailed(Drawable errorDrawable) {
-                callback.failedToLoadImage(fileName);
+                callback.failedToLoadImage(imageName);
             }
 
             @Override
