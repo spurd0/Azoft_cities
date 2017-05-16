@@ -1,7 +1,6 @@
 package com.azcltd.android.test.babenko;
 
 import android.app.Application;
-import android.content.Context;
 
 /**
  * Created by Roman Babenko (babe-roman@yandex.ru) on 08/03/17.
@@ -9,15 +8,15 @@ import android.content.Context;
 
 public class CitiesApplication extends Application {
 
-    private static Context mContext;
+    private static CitiesApplication sInstance;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mContext = this;
+        sInstance = this;
     }
 
-    public static Context getContext(){
-        return mContext;
+    public static CitiesApplication getInstance() {
+        return sInstance;
     }
 }

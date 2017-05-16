@@ -30,7 +30,7 @@ public class CitiesManager {
 
     public void requestCities(final CitiesRequestCallback callback) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(CitiesApplication.getContext().getString(R.string.azcltd_api_url))
+                .baseUrl(CitiesApplication.getInstance().getString(R.string.azcltd_api_url))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

@@ -42,16 +42,16 @@ public class ImageManager {
                     Environment.getExternalStorageDirectory().getPath()
                             + "/" + ApplicationConstants.APPLICATION_FOLDER + "/" + imageName);
         else file = new File(
-                CitiesApplication.getContext().getFilesDir().getPath()
+                CitiesApplication.getInstance().getFilesDir().getPath()
                         + "/" + ApplicationConstants.APPLICATION_FOLDER + "/" + imageName);
         if (file.exists()) {
             callback.imageDownloaded(imageName);
             return;
         }
-        String imageUrl = CitiesApplication.getContext().getResources().getString(R.string.azcltd_api_url) + imageName;
+        String imageUrl = CitiesApplication.getInstance().getResources().getString(R.string.azcltd_api_url) + imageName;
         Target target = prepareImageTarget(imageName, externalDir, callback);
         mTargets.add(target);
-        Picasso.with(CitiesApplication.getContext()).load(imageUrl).into(target);
+        Picasso.with(CitiesApplication.getInstance()).load(imageUrl).into(target);
     }
 
     private Target prepareImageTarget(final String imageName, final boolean externalDir, final ImageCallback callback) {
@@ -68,7 +68,7 @@ public class ImageManager {
                                     Environment.getExternalStorageDirectory().getPath()
                                             + "/" + ApplicationConstants.APPLICATION_FOLDER + "/" + imageName);
                         else file = new File(
-                                CitiesApplication.getContext().getFilesDir().getPath()
+                                CitiesApplication.getInstance().getFilesDir().getPath()
                                         + "/" + ApplicationConstants.APPLICATION_FOLDER + "/" + imageName);
 
                         file.getParentFile().mkdirs();
