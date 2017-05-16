@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="citiesListViewBackground">#00FF00</color>
     <color name="emptyListTextColor">#0000FF</color>
+    <color name="progressDialogColor">@color/colorPrimary</color>
 </resources>

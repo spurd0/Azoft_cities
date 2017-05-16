@@ -1,9 +1,7 @@
 package com.azcltd.android.test.babenko.activities;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,13 +11,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.azcltd.android.test.babenko.BuildConfig;
 import com.azcltd.android.test.babenko.R;
 import com.azcltd.android.test.babenko.adapters.CitiesAdapter;
 import com.azcltd.android.test.babenko.data.Cities;
 import com.azcltd.android.test.babenko.data.City;
+import com.azcltd.android.test.babenko.fragments.AlertDialogFragment;
+import com.azcltd.android.test.babenko.fragments.ProgressDialogFragment;
 import com.azcltd.android.test.babenko.managers.CitiesManager;
 import com.azcltd.android.test.babenko.managers.ImageManager;
 import com.azcltd.android.test.babenko.utils.UtilsHelper;
@@ -28,16 +26,18 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CitiesActivity extends AppCompatActivity {
+    private static final String PROGRESS_DIALOG_FRAGMENT_TAG = "com.azcltd.android.test.babenko.activities.CitiesActivity.PROGRESS_DIALOG_FRAGMENT_TAG";
     private static final String TAG = "CitiesActivity";
     private static final int STORAGE_PERMISSION_CODE = 1;
+
     private ListView mCitiesLv;
     private TextView mConnectionErrorTv;
     private ArrayList<City> mCityList;
     private CitiesAdapter mCitiesAdapter;
-    private MaterialDialog mServerErrorDialog;
-    private MaterialDialog mPermissionsDialog;
-    private MaterialDialog mNoPermissionsDialog;
-    private MaterialDialog mDownloadingCitiesDialog;
+    private AlertDialogFragment mServerErrorDialog;
+    private AlertDialogFragment mPermissionsDialog;
+    private AlertDialogFragment mNoPermissionsDialog;
+    private ProgressDialogFragment mDownloadingCitiesDialog;
     private boolean mPermissionsAsked;
 
     @Override
@@ -75,64 +75,64 @@ public class CitiesActivity extends AppCompatActivity {
             return;
         if (mPermissionsDialog != null)
             return;
-        mPermissionsDialog = new MaterialDialog.Builder(CitiesActivity.this)
-                .title(R.string.permissions_dialog_title)
-                .content(R.string.permissions_dialog_content)
-                .positiveText(android.R.string.ok)
-                .negativeText(android.R.string.cancel)
-                .dismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        mPermissionsDialog = null;
-                    }
-                })
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        UtilsHelper.requestStoragePermissions(CitiesActivity.this, STORAGE_PERMISSION_CODE);
-                    }
-                })
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        requestCities();
-                        mPermissionsDialog.dismiss();
-                    }
-                })
-                .cancelable(false)
-                .show();
+//        mPermissionsDialog = new MaterialDialog.Builder(CitiesActivity.this)
+//                .title(R.string.permissions_dialog_title)
+//                .content(R.string.permissions_dialog_content)
+//                .positiveText(android.R.string.ok)
+//                .negativeText(android.R.string.cancel)
+//                .dismissListener(new DialogInterface.OnDismissListener() {
+//                    @Override
+//                    public void onDismiss(DialogInterface dialog) {
+//                        mPermissionsDialog = null;
+//                    }
+//                })
+//                .onPositive(new MaterialDialog.SingleButtonCallback() {
+//                    @Override
+//                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                        UtilsHelper.requestStoragePermissions(CitiesActivity.this, STORAGE_PERMISSION_CODE);
+//                    }
+//                })
+//                .onNegative(new MaterialDialog.SingleButtonCallback() {
+//                    @Override
+//                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                        requestCities();
+//                        mPermissionsDialog.dismiss();
+//                    }
+//                })
+//                .cancelable(false)
+//                .show();
     }
 
 
     private void showNoPermissionsDialog() {
         if (this.isFinishing()) //todo move to runnable & run in onresume if activity is finishing
             return;
-        mNoPermissionsDialog = new MaterialDialog.Builder(CitiesActivity.this)
-                .title(R.string.permissions_dialog_title)
-                .content(R.string.permissions_error_dialog_content)
-                .positiveText(android.R.string.ok)
-                .negativeText(android.R.string.cancel)
-                .dismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        mNoPermissionsDialog = null;
-                    }
-                })
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        UtilsHelper.startInstalledAppDetailsActivity(CitiesActivity.this);
-                    }
-                })
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        requestCities();
-                        mNoPermissionsDialog.dismiss();
-                    }
-                })
-                .cancelable(false)
-                .show();
+//        mNoPermissionsDialog = new MaterialDialog.Builder(CitiesActivity.this)
+//                .title(R.string.permissions_dialog_title)
+//                .content(R.string.permissions_error_dialog_content)
+//                .positiveText(android.R.string.ok)
+//                .negativeText(android.R.string.cancel)
+//                .dismissListener(new DialogInterface.OnDismissListener() {
+//                    @Override
+//                    public void onDismiss(DialogInterface dialog) {
+//                        mNoPermissionsDialog = null;
+//                    }
+//                })
+//                .onPositive(new MaterialDialog.SingleButtonCallback() {
+//                    @Override
+//                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                        UtilsHelper.startInstalledAppDetailsActivity(CitiesActivity.this);
+//                    }
+//                })
+//                .onNegative(new MaterialDialog.SingleButtonCallback() {
+//                    @Override
+//                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                        requestCities();
+//                        mNoPermissionsDialog.dismiss();
+//                    }
+//                })
+//                .cancelable(false)
+//                .show();
     }
 
     @Override
@@ -155,18 +155,9 @@ public class CitiesActivity extends AppCompatActivity {
     private void requestCities() {
         if (mCityList != null)
             return;
-        mDownloadingCitiesDialog = new MaterialDialog.Builder(this)
-                .title(R.string.loading_dialog_title)
-                .content(R.string.loading_dialog_content)
-                .cancelable(false)
-                .dismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        mDownloadingCitiesDialog = null;
-                    }
-                })
-                .progress(true, 0)
-                .show();
+        mDownloadingCitiesDialog = new ProgressDialogFragment();
+        mDownloadingCitiesDialog.show(getSupportFragmentManager(), PROGRESS_DIALOG_FRAGMENT_TAG);
+
         CitiesManager.getInstance().requestCities(new CitiesManager.CitiesRequestCallback() {
             @Override
             public void gotCities(Cities cities) {
@@ -225,31 +216,31 @@ public class CitiesActivity extends AppCompatActivity {
     private void showServerErrorDialog(String content) {
         if (this.isFinishing()) //todo move to runnable & run in onresume if activity is finishing
             return;
-        mServerErrorDialog = new MaterialDialog.Builder(CitiesActivity.this)
-                .title(R.string.error_dialog_title)
-                .content(content)
-                .positiveText(R.string.error_dialog_try_again)
-                .negativeText(android.R.string.cancel)
-                .dismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        mServerErrorDialog = null;
-                    }
-                })
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        requestCities();
-                    }
-                })
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        mServerErrorDialog.dismiss();
-                    }
-                })
-                .cancelable(false)
-                .show();
+//        mServerErrorDialog = new MaterialDialog.Builder(CitiesActivity.this)
+//                .title(R.string.error_dialog_title)
+//                .content(content)
+//                .positiveText(R.string.error_dialog_try_again)
+//                .negativeText(android.R.string.cancel)
+//                .dismissListener(new DialogInterface.OnDismissListener() {
+//                    @Override
+//                    public void onDismiss(DialogInterface dialog) {
+//                        mServerErrorDialog = null;
+//                    }
+//                })
+//                .onPositive(new MaterialDialog.SingleButtonCallback() {
+//                    @Override
+//                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                        requestCities();
+//                    }
+//                })
+//                .onNegative(new MaterialDialog.SingleButtonCallback() {
+//                    @Override
+//                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                        mServerErrorDialog.dismiss();
+//                    }
+//                })
+//                .cancelable(false)
+//                .show();
     }
 
     private void receivedCitiesList(ArrayList<City> cities) {
