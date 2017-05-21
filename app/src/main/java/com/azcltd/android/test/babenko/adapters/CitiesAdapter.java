@@ -73,7 +73,7 @@ public class CitiesAdapter extends ArrayAdapter<City> {
 
         viewHolder.cityNameTextView.setText(getItem(position).name);
 
-        viewHolder.cityImageView.post(new Runnable() {
+        viewHolder.cityImageView.post(new Runnable() {  // this is rubbish!
             @Override
             public void run() {
                 int size = viewHolder.cityImageView.getWidth() > viewHolder.cityImageView.getHeight() ?
